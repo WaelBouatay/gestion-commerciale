@@ -1,0 +1,16 @@
+# .NET
+bin/
+obj/
+*.user
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+
+# Base de données locale (optionnel, à toi de voir si tu veux la versionner ou pas)
+GestionCommerciale.Api/GestionCommercialeDb.sqlite
+
+# Éditeurs
+.vscode/
+.idea/
