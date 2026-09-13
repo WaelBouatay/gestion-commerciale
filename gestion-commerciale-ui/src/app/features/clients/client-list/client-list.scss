@@ -1,0 +1,24 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-lg);
+}
+
+.page-subtitle {
+  color: var(--color-ink-muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.empty-state {
+  color: var(--color-ink-muted);
+  text-align: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}

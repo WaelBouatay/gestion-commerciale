@@ -1,0 +1,19 @@
+.form-layout {
+  max-width: 480px;
+}
+
+.form-row {
+  display: flex;
+  gap: var(--spacing-md);
+
+  .form-group {
+    flex: 1;
+  }
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-lg);
+}

@@ -1,0 +1,55 @@
+@if (loading()) {
+  <p class="empty-state">Chargement…</p>
+} @else if (order(); as o) {
+  <div class="page-header">
+    <div>
+      <h1 class="num">{{ o.numeroCommande }}</h1>
+      <p class="page-subtitle">Client : {{ o.clientNom }} — {{ o.dateCommande | date: 'dd/MM/yyyy' }}</p>
+    </div>
+    <div class="header-actions">
+      <span class="status" [ngClass]="statusClass()">{{ statusLabel() }}</span>
+      @if (o.statut === 'Brouillon') {
+        <a [routerLink]="['/commandes', o.id, 'modifier']" class="btn btn-outline">Modifier</a>
+        <button class="btn btn-validate" [disabled]="validating()" (click)="validate()">
+          {{ validating() ? 'Validation…' : 'Valider la commande' }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="surface">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Produit</th>
+        <th class="col-num">Quantité</th>
+        <th class="col-num">Prix unitaire</th>
+        <th class="col-num">Total ligne</th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (ligne of o.lignes; track ligne.id) {
+          <tr>
+            <td>{{ ligne.productNom }}</td>
+            <td class="num col-num">{{ ligne.quantite }}</td>
+            <td class="num col-num">{{ ligne.prixUnitaire | number: '1.2-2' }} DT</td>
+            <td class="num col-num">{{ ligne.totalLigne | number: '1.2-2' }} DT</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="total-row">
+        <span>Total HT</span>
+        <span class="num">{{ o.totalHT | number: '1.2-2' }} DT</span>
+      </div>
+      <div class="total-row total-row-final">
+        <span>Total TTC</span>
+        <span class="num">{{ o.totalTTC | number: '1.2-2' }} DT</span>
+      </div>
+    </div>
+  </div>
+
+  <a routerLink="/commandes" class="btn btn-outline back-link">← Retour aux commandes</a>
+}

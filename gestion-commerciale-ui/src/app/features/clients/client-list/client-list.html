@@ -1,0 +1,57 @@
+<div class="page-header">
+  <div>
+    <h1>Clients</h1>
+    <p class="page-subtitle">Gérez votre portefeuille clients</p>
+  </div>
+  <a routerLink="/clients/nouveau" class="btn btn-primary">Ajouter un client</a>
+</div>
+
+<div class="stat-strip">
+  <div class="stat-tile">
+    <span class="stat-value">{{ totalClients() }}</span>
+    <span class="stat-label">Clients enregistrés</span>
+  </div>
+  <div class="stat-tile stat-validated">
+    <span class="stat-value">{{ nouveauxCeMois() }}</span>
+    <span class="stat-label">Nouveaux ce mois-ci</span>
+  </div>
+</div>
+
+
+<div class="surface">
+  @if (loading()) {
+    <p class="empty-state">Chargement…</p>
+  } @else if (clients().length === 0) {
+    <p class="empty-state">Aucun client enregistré pour l'instant.</p>
+  } @else {
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Email</th>
+        <th>Téléphone</th>
+        <th>Créé le</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (client of clients(); track client.id) {
+          <tr>
+            <td>
+              <a [routerLink]="['/clients', client.id]">
+                {{ client.nom }} {{ client.prenomOuRaisonSociale }}
+              </a>
+            </td>
+            <td>{{ client.email }}</td>
+            <td class="num">{{ client.telephone }}</td>
+            <td class="num">{{ client.dateCreation | date: 'dd/MM/yyyy' }}</td>
+            <td class="actions">
+              <a [routerLink]="['/clients', client.id, 'modifier']" class="btn btn-outline">Modifier</a>
+              <button class="btn btn-danger" (click)="confirmDelete(client)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

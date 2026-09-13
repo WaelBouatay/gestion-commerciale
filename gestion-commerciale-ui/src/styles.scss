@@ -1,0 +1,265 @@
+// ==========================================================================
+// DESIGN TOKENS — esprit "registre commercial"
+// ==========================================================================
+
+:root {
+  // Couleurs
+  --color-ink: rgb(21, 20, 20);            // texte principal, titres
+  --color-ink-muted: #5B6472;      // texte secondaire
+  --color-paper: #F1EADD;   // fond général
+  --color-surface: #FFFFFF;        // tableaux, formulaires
+  --color-rule: #D8D9D2;           // traits fins / bordures
+  --color-validated-bright: #22C55E; // vert plus vif, pour ressortir sur fond sombre
+  --color-validated: #146B54;      // vert registre — succès, validé
+  --color-validated-bg: #E3EFEA;
+  --color-draft: #B4762F;          // cuivre — brouillon
+  --color-draft-bg: #F5EBDC;
+  --color-danger: #B3261E;         // rouge sourd — erreur, suppression
+  --color-danger-bg: #F5E4E2;
+
+  // Typographie
+  --font-display: 'Source Serif 4', Georgia, serif;   // titres de page
+  --font-body: 'Inter', -apple-system, sans-serif;     // texte, formulaires, boutons
+  --font-mono: 'JetBrains Mono', monospace;            // chiffres, montants, numéros
+
+  // Espacements
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+
+  --radius-sm: 4px; // volontairement discret, pas de gros arrondis partout
+}
+
+// ==========================================================================
+// RESET & BASE
+// ==========================================================================
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink);
+  line-height: 1.25;
+}
+
+h1 { font-size: 26px; }
+h2 { font-size: 20px; }
+h3 { font-size: 16px; }
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+// Classe utilitaire pour tout affichage de chiffre (prix, quantité, numéro...)
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums; // aligne les chiffres proprement en colonne
+}
+
+// ==========================================================================
+// BOUTONS
+// ==========================================================================
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+
+  &.btn-primary {
+    background-color: var(--color-ink);
+    color: white;
+    &:hover { background-color: #212B38; }
+  }
+
+  &.btn-validate {
+    background-color: var(--color-validated);
+    color: white;
+    &:hover { filter: brightness(0.92); }
+  }
+
+  &.btn-danger {
+    background-color: var(--color-danger-bg);
+    color: var(--color-danger);
+    &:hover { background-color: var(--color-danger); color: white; }
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-rule);
+    &:hover { background-color: white; }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+// ==========================================================================
+// SURFACES (formulaires, panneaux — PAS de cartes-ombre partout)
+// ==========================================================================
+
+.surface {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-lg);
+}
+
+// ==========================================================================
+// STATUTS DE COMMANDE
+// ==========================================================================
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+
+  &.status-validee  { background-color: var(--color-validated-bg); color: var(--color-validated); }
+  &.status-brouillon{ background-color: var(--color-draft-bg); color: var(--color-draft); }
+  &.status-annulee  { background-color: var(--color-danger-bg); color: var(--color-danger); }
+}
+
+// ==========================================================================
+// TABLEAUX — traits fins, pas de cartes avec ombre
+// ==========================================================================
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-ink);
+  }
+
+  tbody td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-rule);
+    font-size: 14px;
+  }
+
+  tbody tr:hover {
+    background-color: var(--color-surface);
+  }
+
+  .col-num {
+    text-align: right;
+  }
+}
+
+// ==========================================================================
+// FORMULAIRES
+// ==========================================================================
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-md);
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+  }
+
+  input, select, textarea {
+    padding: 9px 12px;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: var(--color-ink);
+    }
+  }
+
+  .error-message {
+    font-size: 12px;
+    color: var(--color-danger);
+  }
+}
+
+.stat-strip {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.stat-tile {
+  flex: 1;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-left: 3px solid var(--color-ink);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+
+  &.stat-validated { border-left-color: var(--color-validated); }
+  &.stat-draft { border-left-color: var(--color-draft); }
+  &.stat-danger { border-left-color: var(--color-danger); }
+
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--color-ink);
+    display: block;
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--color-ink-muted);
+    margin-top: 2px;
+  }
+}
+

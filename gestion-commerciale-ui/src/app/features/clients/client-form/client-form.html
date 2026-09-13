@@ -1,0 +1,50 @@
+<div class="page-header">
+  <h1>{{ clientId() ? 'Modifier le client' : 'Nouveau client' }}</h1>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="surface form-layout">
+
+  <div class="form-group">
+    <label for="nom">Nom *</label>
+    <input id="nom" type="text" formControlName="nom" />
+    @if (form.controls.nom.invalid && form.controls.nom.touched) {
+      <span class="error-message">Le nom est obligatoire.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="prenom">Prénom ou raison sociale *</label>
+    <input id="prenom" type="text" formControlName="prenomOuRaisonSociale" />
+    @if (form.controls.prenomOuRaisonSociale.invalid && form.controls.prenomOuRaisonSociale.touched) {
+      <span class="error-message">Ce champ est obligatoire.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email *</label>
+    <input id="email" type="email" formControlName="email" />
+    @if (form.controls.email.invalid && form.controls.email.touched) {
+      <span class="error-message">Un email valide est requis.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="telephone">Téléphone *</label>
+    <input id="telephone" type="text" formControlName="telephone" />
+    @if (form.controls.telephone.invalid && form.controls.telephone.touched) {
+      <span class="error-message">Le téléphone est obligatoire.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="adresses">Adresses (une par ligne)</label>
+    <textarea id="adresses" rows="3" formControlName="adressesText"></textarea>
+  </div>
+
+  <div class="form-actions">
+    <a routerLink="/clients" class="btn btn-outline">Annuler</a>
+    <button type="submit" class="btn btn-primary" [disabled]="saving()">
+      {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+    </button>
+  </div>
+</form>

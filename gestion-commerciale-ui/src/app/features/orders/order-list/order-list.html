@@ -1,0 +1,62 @@
+<div class="page-header">
+  <div>
+    <h1>Commandes</h1>
+    <p class="page-subtitle">Suivez vos commandes clients</p>
+  </div>
+  <a routerLink="/commandes/nouvelle" class="btn btn-primary">Nouvelle commande</a>
+</div>
+
+<div class="stat-strip">
+  <div class="stat-tile">
+    <span class="stat-value">{{ totalCommandes() }}</span>
+    <span class="stat-label">Commandes au total</span>
+  </div>
+  <div class="stat-tile stat-draft">
+    <span class="stat-value">{{ enBrouillon() }}</span>
+    <span class="stat-label">En attente de validation</span>
+  </div>
+  <div class="stat-tile stat-validated">
+    <span class="stat-value">{{ chiffreAffaires() | number: '1.0-0' }} DT</span>
+    <span class="stat-label">Chiffre d'affaires validé</span>
+  </div>
+</div>
+
+<div class="surface">
+  @if (loading()) {
+    <p class="empty-state">Chargement…</p>
+  } @else if (orders().length === 0) {
+    <p class="empty-state">Aucune commande enregistrée pour l'instant.</p>
+  } @else {
+    <table class="table">
+      <thead>
+      <tr>
+        <th>N° commande</th>
+        <th>Client</th>
+        <th>Date</th>
+        <th>Statut</th>
+        <th class="col-num">Total TTC</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td class="num">
+              <a [routerLink]="['/commandes', order.id]">{{ order.numeroCommande }}</a>
+            </td>
+            <td>{{ order.clientNom }}</td>
+            <td class="num">{{ order.dateCommande | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="status" [ngClass]="statusClass(order)">{{ statusLabel(order) }}</span>
+            </td>
+            <td class="num col-num">{{ order.totalTTC | number: '1.2-2' }} DT</td>
+            <td class="actions">
+              <a [routerLink]="['/commandes', order.id]" class="btn btn-outline">Détail</a>
+              <button class="btn btn-danger" (click)="confirmDelete(order)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

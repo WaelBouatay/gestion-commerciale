@@ -1,0 +1,78 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  animation: shell-enter 0.4s ease-out;
+}
+
+@keyframes shell-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.shell-nav {
+  width: 232px;
+  flex-shrink: 0;
+  background-color: var(--color-ink);
+  padding: var(--spacing-lg) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--spacing-lg) var(--spacing-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--spacing-md);
+}
+
+.brand-logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 70px;
+}
+
+
+nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px var(--spacing-lg);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.55);
+  border-left: 3px solid transparent;
+  transition: all 0.15s ease;
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  &.active {
+    color: white;
+    font-weight: 600;
+    border-left-color: var(--color-validated-bright);
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.shell-content {
+  flex: 1;
+  padding: var(--spacing-xl);
+  max-width: 1200px;
+  background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      var(--color-rule) 32px
+  );
+  background-attachment: local;
+}

@@ -1,0 +1,81 @@
+<div class="page-header">
+  <h1>{{ orderId() ? 'Modifier la commande' : 'Nouvelle commande' }}</h1>
+</div>
+
+<div class="surface form-layout">
+
+  <div class="form-group">
+    <label for="client">Client</label>
+    <select
+      id="client"
+      [value]="selectedClientId() ?? ''"
+      (change)="selectedClientId.set($any($event.target).value ? +$any($event.target).value : null)"
+    >
+      <option value="">-- Sélectionner un client --</option>
+      @for (client of clients(); track client.id) {
+        <option [value]="client.id">{{ client.nom }} {{ client.prenomOuRaisonSociale }}</option>
+      }
+    </select>
+  </div>
+
+  <h3 class="lines-title">Produits commandés</h3>
+
+  <table class="table lines-table">
+    <thead>
+    <tr>
+      <th>Produit</th>
+      <th class="col-num">Stock dispo.</th>
+      <th class="col-num">Quantité</th>
+      <th class="col-num">Prix unitaire</th>
+      <th class="col-num">Total ligne</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (line of lines(); track $index; let i = $index) {
+        <tr>
+          <td>
+            <select
+              [value]="line.productId ?? ''"
+              (change)="onProductChange(i, $any($event.target).value)"
+            >
+              <option value="">-- Produit --</option>
+              @for (product of products(); track product.id) {
+                <option [value]="product.id">{{ product.nom }}</option>
+              }
+            </select>
+          </td>
+          <td class="num col-num">{{ productStock(line.productId) }}</td>
+          <td class="col-num">
+            <input
+              type="number"
+              min="1"
+              class="qty-input"
+              [value]="line.quantite"
+              (input)="onQuantiteChange(i, $any($event.target).value)"
+            />
+          </td>
+          <td class="num col-num">{{ productPrice(line.productId) | number: '1.2-2' }} DT</td>
+          <td class="num col-num">{{ (productPrice(line.productId) * line.quantite) | number: '1.2-2' }} DT</td>
+          <td class="actions">
+            <button type="button" class="btn btn-outline" (click)="removeLine(i)">Retirer</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <button type="button" class="btn btn-outline" (click)="addLine()">+ Ajouter une ligne</button>
+
+  <div class="totals-preview">
+    <span>Total HT estimé</span>
+    <span class="num">{{ totalHTPreview() | number: '1.2-2' }} DT</span>
+  </div>
+
+  <div class="form-actions">
+    <a routerLink="/commandes" class="btn btn-outline">Annuler</a>
+    <button type="button" class="btn btn-primary" [disabled]="saving() || !canSubmit()" (click)="submit()">
+      {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+    </button>
+  </div>
+</div>

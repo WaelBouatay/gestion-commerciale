@@ -1,0 +1,68 @@
+.form-layout {
+  max-width: 900px;
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+  max-width: 400px;
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--spacing-xs);
+  }
+
+  select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface);
+  }
+}
+
+.lines-title {
+  margin-bottom: var(--spacing-md);
+}
+
+.lines-table {
+  margin-bottom: var(--spacing-md);
+
+  select {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+  }
+
+  .qty-input {
+    width: 70px;
+    padding: 6px 8px;
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-sm);
+    text-align: right;
+  }
+
+  .actions {
+    text-align: right;
+  }
+}
+
+.totals-preview {
+  display: flex;
+  justify-content: space-between;
+  max-width: 300px;
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  background-color: var(--color-paper);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
