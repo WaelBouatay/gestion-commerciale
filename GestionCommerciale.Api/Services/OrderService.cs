@@ -7,7 +7,7 @@ namespace GestionCommerciale.Api.Services
 {
     public class OrderService : IOrderService
     {
-        private const decimal TAUX_TVA = 0.19m; // 19%, règle de gestion section 4
+        //private const decimal TAUX_TVA = 0.19m;
 
         private readonly AppDbContext _context;
 
@@ -16,15 +16,17 @@ namespace GestionCommerciale.Api.Services
             _context = context;
         }
 
-        public async Task<List<OrderDto>> GetAllAsync()
+      public async Task<List<OrderDto>> GetAllAsync()
         {
-            var orders = await _context.Orders
+                var orders = await _context.Orders
                 .Include(o => o.Client)
                 .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Product)
+                .Include(o => o.OrderRemises)           
+                .ThenInclude(or => or.Remise)        
                 .ToListAsync();
 
-            return orders.Select(MapToDto).ToList();
+                return orders.Select(MapToDto).ToList();
         }
 
         public async Task<OrderDto?> GetByIdAsync(int id)
@@ -33,9 +35,11 @@ namespace GestionCommerciale.Api.Services
                 .Include(o => o.Client)
                 .Include(o => o.OrderLines)
                     .ThenInclude(ol => ol.Product)
+                .Include(o => o.OrderRemises)           
+                .ThenInclude(or => or.Remise)        
                 .FirstOrDefaultAsync(o => o.Id == id);
 
-            return order == null ? null : MapToDto(order);
+                return order == null ? null : MapToDto(order);
         }
 
         public async Task<OrderDto> CreateAsync(CreateOrderDto dto)
@@ -64,7 +68,7 @@ namespace GestionCommerciale.Api.Services
             }
 
             // Calcul des totaux (Total HT = somme des lignes, Total TTC = HT + TVA)
-            CalculateTotals(order);
+            await CalculateTotalsAsync(order, dto.RemiseIds); 
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
@@ -104,7 +108,8 @@ namespace GestionCommerciale.Api.Services
                 order.OrderLines.Add(orderLine);
             }
 
-            CalculateTotals(order);
+            
+            await CalculateTotalsAsync(order, dto.RemiseIds); 
 
             await _context.SaveChangesAsync();
             return true;
@@ -180,11 +185,47 @@ namespace GestionCommerciale.Api.Services
             };
         }
 
-        private static void CalculateTotals(Order order)
-        {
-            order.TotalHT = order.OrderLines.Sum(l => l.TotalLigne);
-            order.TotalTTC = Math.Round(order.TotalHT * (1 + TAUX_TVA), 2);
-        }
+
+            private async Task CalculateTotalsAsync(Order order, List<int> remiseIds)
+                {
+                    order.TotalHT = order.OrderLines.Sum(l => l.TotalLigne);
+
+                    // 1: appliquer les remises 
+                    var remisesActives = await _context.Remises
+                    .Where(r => remiseIds.Contains(r.Id) && r.Active)
+                    .ToListAsync();
+
+                    decimal montantRemise = 0;
+                foreach (var remise in remisesActives)
+            {
+                montantRemise += remise.Type == TypeRemise.Pourcentage
+                ? order.TotalHT * (remise.Valeur / 100m)
+                : remise.Valeur;
+            }
+
+                order.MontantRemise = Math.Round(montantRemise, 2);
+
+    
+                var totalHTApresRemise = Math.Max(0, order.TotalHT - order.MontantRemise);
+
+    
+                order.OrderRemises.Clear();
+                order.OrderRemises = remisesActives.Select(r => new OrderRemise { RemiseId = r.Id }).ToList();
+
+            // 2 : appliquer les taxes sur le total 
+                    var taxesActives = await _context.Taxes.Where(t => t.Active).ToListAsync();
+
+                    decimal totalTaxes = 0;
+                    foreach (var taxe in taxesActives)
+                {
+                    totalTaxes += taxe.Type == TypeTaxe.Pourcentage
+                    ? totalHTApresRemise * (taxe.Valeur / 100m)
+                    : taxe.Valeur;
+                }
+
+                order.TotalTTC = Math.Round(totalHTApresRemise + totalTaxes, 2);
+                }
+
 
         private async Task<string> GenerateNumeroCommandeAsync()
         {
@@ -194,30 +235,35 @@ namespace GestionCommerciale.Api.Services
             return $"CMD-{year}-{(count + 1):D5}";
         }
 
-        private static OrderDto MapToDto(Order order)
+       private static OrderDto MapToDto(Order order)
+{
+    return new OrderDto
+    {
+        Id = order.Id,
+        NumeroCommande = order.NumeroCommande,
+        ClientId = order.ClientId,
+        ClientNom = order.Client != null
+            ? $"{order.Client.Nom} {order.Client.PrenomOuRaisonSociale}"
+            : string.Empty,
+        DateCommande = order.DateCommande,
+        Statut = order.Statut,
+        TotalHT = order.TotalHT,
+        TotalTTC = order.TotalTTC,
+        MontantRemise = order.MontantRemise,                                          
+        RemisesAppliquees = order.OrderRemises                                          
+            .Select(or => or.Remise?.Libelle ?? "")
+            .ToList(),
+        Lignes = order.OrderLines.Select(l => new OrderLineDto
         {
-            return new OrderDto
-            {
-                Id = order.Id,
-                NumeroCommande = order.NumeroCommande,
-                ClientId = order.ClientId,
-                ClientNom = order.Client != null
-                    ? $"{order.Client.Nom} {order.Client.PrenomOuRaisonSociale}"
-                    : string.Empty,
-                DateCommande = order.DateCommande,
-                Statut = order.Statut,
-                TotalHT = order.TotalHT,
-                TotalTTC = order.TotalTTC,
-                Lignes = order.OrderLines.Select(l => new OrderLineDto
-                {
-                    Id = l.Id,
-                    ProductId = l.ProductId,
-                    ProductNom = l.Product?.Nom ?? string.Empty,
-                    Quantite = l.Quantite,
-                    PrixUnitaire = l.PrixUnitaire,
-                    TotalLigne = l.TotalLigne
-                }).ToList()
-            };
-        }
+            Id = l.Id,
+            ProductId = l.ProductId,
+            ProductNom = l.Product?.Nom ?? string.Empty,
+            Quantite = l.Quantite,
+            PrixUnitaire = l.PrixUnitaire,
+            TotalLigne = l.TotalLigne
+        }).ToList()
+    };
+}
+        
     }
 }

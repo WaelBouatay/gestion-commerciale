@@ -29,5 +29,10 @@ namespace GestionCommerciale.Api.Models
 
         // Une commande contient plusieurs lignes
         public List<OrderLine> OrderLines { get; set; } = new();
+
+        public List<OrderRemise> OrderRemises { get; set; } = new();
+
+
+        public decimal MontantRemise { get; set; }
     }
 }

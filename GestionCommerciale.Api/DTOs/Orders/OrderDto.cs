@@ -12,6 +12,8 @@ namespace GestionCommerciale.Api.DTOs.Orders
         public OrderStatus Statut { get; set; }
         public decimal TotalHT { get; set; }
         public decimal TotalTTC { get; set; }
+        public decimal MontantRemise { get; set; } = 0;              
+        public List<string> RemisesAppliquees { get; set; } = new(); 
         public List<OrderLineDto> Lignes { get; set; } = new();
     }
 }

@@ -6,6 +6,16 @@
   <a routerLink="/clients/nouveau" class="btn btn-primary">Ajouter un client</a>
 </div>
 
+<!--
+<input
+  type="text"
+  placeholder="Rechercher un client..."
+  class="search-input"
+  (input)="onSearchChange($any($event.target).value)"
+/>
+-->
+
+
 <div class="stat-strip">
   <div class="stat-tile">
     <span class="stat-value">{{ totalClients() }}</span>

@@ -1,0 +1,50 @@
+<div class="page-header">
+  <div>
+    <h1>Remises</h1>
+    <p class="page-subtitle">Gérez les remises applicables aux commandes</p>
+  </div>
+  <a routerLink="/remises/nouvelle" class="btn btn-primary btn-icon-left">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    Ajouter une remise
+  </a>
+</div>
+
+<div class="surface">
+  @if (loading()) {
+    <p class="empty-state">Chargement…</p>
+  } @else if (remises().length === 0) {
+    <p class="empty-state">Aucune remise configurée.</p>
+  } @else {
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Libellé</th>
+        <th>Type</th>
+        <th class="col-num">Valeur</th>
+        <th>État</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (remise of remises(); track remise.id) {
+          <tr>
+            <td>{{ remise.libelle }}</td>
+            <td>{{ remise.type === 'Pourcentage' ? 'Pourcentage' : 'Montant fixe' }}</td>
+            <td class="num col-num">{{ valeurAffichee(remise) }}</td>
+            <td>
+              <span class="status" [class.status-validee]="remise.active" [class.status-annulee]="!remise.active">
+                {{ remise.active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td class="actions">
+              <a [routerLink]="['/remises', remise.id, 'modifier']" class="btn btn-outline">Modifier</a>
+              <button class="btn btn-danger" (click)="confirmDelete(remise)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

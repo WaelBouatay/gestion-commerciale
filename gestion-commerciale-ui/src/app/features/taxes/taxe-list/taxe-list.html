@@ -1,0 +1,50 @@
+<div class="page-header">
+  <div>
+    <h1>Taxes</h1>
+    <p class="page-subtitle">Gérez les taxes appliquées au calcul du TTC</p>
+  </div>
+  <a routerLink="/taxes/nouvelle" class="btn btn-primary btn-icon-left">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    Ajouter une taxe
+  </a>
+</div>
+
+<div class="surface">
+  @if (loading()) {
+    <p class="empty-state">Chargement…</p>
+  } @else if (taxes().length === 0) {
+    <p class="empty-state">Aucune taxe configurée. Le total TTC sera égal au total HT tant qu'aucune taxe active n'existe.</p>
+  } @else {
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Libellé</th>
+        <th>Type</th>
+        <th class="col-num">Valeur</th>
+        <th>État</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (taxe of taxes(); track taxe.id) {
+          <tr>
+            <td>{{ taxe.libelle }}</td>
+            <td>{{ taxe.type === 'Pourcentage' ? 'Pourcentage' : 'Montant fixe' }}</td>
+            <td class="num col-num">{{ valeurAffichee(taxe) }}</td>
+            <td>
+              <span class="status" [class.status-validee]="taxe.active" [class.status-annulee]="!taxe.active">
+                {{ taxe.active ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td class="actions">
+              <a [routerLink]="['/taxes', taxe.id, 'modifier']" class="btn btn-outline">Modifier</a>
+              <button class="btn btn-danger" (click)="confirmDelete(taxe)">Supprimer</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

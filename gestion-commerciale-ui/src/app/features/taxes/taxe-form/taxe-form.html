@@ -1,0 +1,46 @@
+<div class="page-header">
+  <h1>{{ taxeId() ? 'Modifier la taxe' : 'Nouvelle taxe' }}</h1>
+</div>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="surface form-layout">
+
+  <div class="form-group">
+    <label for="libelle">Libellé</label>
+    <input id="libelle" type="text" formControlName="libelle" placeholder="Ex: TVA, Taxe écologique" />
+    @if (form.controls.libelle.invalid && form.controls.libelle.touched) {
+      <span class="error-message">Le libellé est obligatoire.</span>
+    }
+  </div>
+
+  <div class="form-group">
+    <label for="type">Type</label>
+    <select id="type" formControlName="type">
+      <option value="Pourcentage">Pourcentage (%)</option>
+      <option value="MontantFixe">Montant fixe (DT)</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="valeur">
+      Valeur {{ form.controls.type.value === 'Pourcentage' ? '(en %)' : '(en DT)' }}
+    </label>
+    <input id="valeur" type="number" step="0.01" formControlName="valeur" />
+    @if (form.controls.valeur.invalid && form.controls.valeur.touched) {
+      <span class="error-message">La valeur ne peut pas être négative.</span>
+    }
+  </div>
+
+  <div class="form-group form-group-checkbox">
+    <label>
+      <input type="checkbox" formControlName="active" />
+      Taxe active (appliquée au calcul du TTC)
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <a routerLink="/taxes" class="btn btn-outline">Annuler</a>
+    <button type="submit" class="btn btn-primary" [disabled]="saving()">
+      {{ saving() ? 'Enregistrement…' : 'Enregistrer' }}
+    </button>
+  </div>
+</form>

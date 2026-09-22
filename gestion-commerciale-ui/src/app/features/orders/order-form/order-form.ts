@@ -2,6 +2,8 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ClientService } from '../../../core/services/client.service';
+import { RemiseService } from '../../../core/services/remise.service';
+import { Remise } from '../../../core/models/remise.model';
 import { ProductService } from '../../../core/services/product.service';
 import { OrderService } from '../../../core/services/order.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -24,6 +26,7 @@ interface DraftLine {
 export class OrderForm implements OnInit {
   private clientService = inject(ClientService);
   private productService = inject(ProductService);
+  private remiseService = inject(RemiseService);
   private orderService = inject(OrderService);
   private toastService = inject(ToastService);
   private route = inject(ActivatedRoute);
@@ -34,6 +37,9 @@ export class OrderForm implements OnInit {
 
   clients = signal<Client[]>([]);
   products = signal<Product[]>([]);
+
+  remises = signal<Remise[]>([]);
+  selectedRemiseIds = signal<number[]>([]);
 
   selectedClientId = signal<number | null>(null);
   lines = signal<DraftLine[]>([{ productId: null, quantite: 1 }]);
@@ -57,6 +63,11 @@ export class OrderForm implements OnInit {
     this.productService.getAll().subscribe({
       next: (data) => this.products.set(data),
       error: () => this.toastService.error('Impossible de charger les produits.'),
+    });
+
+    this.remiseService.getAll().subscribe({
+      next: (data) => this.remises.set(data.filter((r) => r.active)),
+      error: () => this.toastService.error('Impossible de charger les remises.'),
     });
 
     const idParam = this.route.snapshot.paramMap.get('id');
@@ -93,6 +104,12 @@ export class OrderForm implements OnInit {
     this.lines.update((list) => list.filter((_, i) => i !== index));
   }
 
+  toggleRemise(id: number): void {
+    this.selectedRemiseIds.update((list) =>
+      list.includes(id) ? list.filter((x) => x !== id) : [...list, id],
+    );
+  }
+
   onProductChange(index: number, productId: string): void {
     this.lines.update((list) => {
       const copy = [...list];
@@ -126,6 +143,7 @@ export class OrderForm implements OnInit {
     const payload = {
       clientId: this.selectedClientId()!,
       lignes: this.lines().map((l) => ({ productId: l.productId!, quantite: l.quantite })),
+      remiseIds: this.selectedRemiseIds(),
     };
 
     const id = this.orderId();

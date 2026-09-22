@@ -25,6 +25,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<ITaxeService, TaxeService>();
+builder.Services.AddScoped<IRemiseService, RemiseService>();
 
 builder.Services.AddCors(options =>
 {

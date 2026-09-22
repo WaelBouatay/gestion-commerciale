@@ -68,6 +68,24 @@
   <button type="button" class="btn btn-outline" (click)="addLine()">+ Ajouter une ligne</button>
 
   <div class="totals-preview">
+    <div class="form-group remises-group">
+      <label>Remises applicables</label>
+      @if (remises().length === 0) {
+        <p class="no-remise-hint">Aucune remise active configurée.</p>
+      } @else {
+        @for (remise of remises(); track remise.id) {
+          <label class="checkbox-line">
+            <input
+              type="checkbox"
+              [checked]="selectedRemiseIds().includes(remise.id)"
+              (change)="toggleRemise(remise.id)"
+            />
+            {{ remise.libelle }}
+            ({{ remise.type === 'Pourcentage' ? remise.valeur + '%' : remise.valeur + ' DT' }})
+          </label>
+        }
+      }
+    </div>
     <span>Total HT estimé</span>
     <span class="num">{{ totalHTPreview() | number: '1.2-2' }} DT</span>
   </div>

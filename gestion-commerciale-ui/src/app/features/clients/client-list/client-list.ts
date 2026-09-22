@@ -27,12 +27,11 @@ export class ClientList implements OnInit {
 
   nouveauxCeMois = computed(() => {
     const now = new Date();
-    return this.clients().filter(c => {
+    return this.clients().filter((c) => {
       const d = new Date(c.dateCreation);
       return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
     }).length;
   });
-
 
   loadClients(): void {
     this.loading.set(true);
@@ -66,4 +65,20 @@ export class ClientList implements OnInit {
       },
     });
   }
+/*
+  searchTerm = signal('');
+
+  // Liste filtrée, recalculée automatiquement à chaque frappe
+  filteredClients = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) return this.clients();
+    return this.clients().filter(
+      (c) =>
+        c.nom.toLowerCase().includes(term) || c.prenomOuRaisonSociale.toLowerCase().includes(term),
+    );
+  });
+
+  onSearchChange(value: string): void {
+    this.searchTerm.set(value);
+  } */
 }

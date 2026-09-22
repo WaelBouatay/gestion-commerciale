@@ -3,6 +3,7 @@ using System;
 using GestionCommerciale.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionCommerciale.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260922075153_AjoutTVA")]
+    partial class AjoutTVA
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
@@ -61,10 +64,6 @@ namespace GestionCommerciale.Api.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DateCommande")
-                        .HasColumnType("TEXT");
-
-                    b.Property<decimal>("MontantRemise")
-                        .HasPrecision(18, 2)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NumeroCommande")
@@ -121,21 +120,6 @@ namespace GestionCommerciale.Api.Migrations
                     b.ToTable("OrderLines");
                 });
 
-            modelBuilder.Entity("GestionCommerciale.Api.Models.OrderRemise", b =>
-                {
-                    b.Property<int>("OrderId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RemiseId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("OrderId", "RemiseId");
-
-                    b.HasIndex("RemiseId");
-
-                    b.ToTable("OrderRemises");
-                });
-
             modelBuilder.Entity("GestionCommerciale.Api.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -167,31 +151,6 @@ namespace GestionCommerciale.Api.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("GestionCommerciale.Api.Models.Remise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Libelle")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Valeur")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Remises");
                 });
 
             modelBuilder.Entity("GestionCommerciale.Api.Models.Taxe", b =>
@@ -249,25 +208,6 @@ namespace GestionCommerciale.Api.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("GestionCommerciale.Api.Models.OrderRemise", b =>
-                {
-                    b.HasOne("GestionCommerciale.Api.Models.Order", "Order")
-                        .WithMany("OrderRemises")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("GestionCommerciale.Api.Models.Remise", "Remise")
-                        .WithMany()
-                        .HasForeignKey("RemiseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Remise");
-                });
-
             modelBuilder.Entity("GestionCommerciale.Api.Models.Client", b =>
                 {
                     b.Navigation("Orders");
@@ -276,8 +216,6 @@ namespace GestionCommerciale.Api.Migrations
             modelBuilder.Entity("GestionCommerciale.Api.Models.Order", b =>
                 {
                     b.Navigation("OrderLines");
-
-                    b.Navigation("OrderRemises");
                 });
 #pragma warning restore 612, 618
         }

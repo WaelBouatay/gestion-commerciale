@@ -66,3 +66,36 @@
   gap: var(--spacing-sm);
   justify-content: flex-end;
 }
+
+.remises-group {
+  margin-bottom: var(--spacing-lg);
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--spacing-sm);
+  }
+}
+
+.checkbox-line {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400 !important;
+  color: var(--color-ink) !important;
+  margin-bottom: 6px;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.no-remise-hint {
+  font-size: 13px;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}

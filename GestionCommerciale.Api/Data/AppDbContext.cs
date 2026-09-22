@@ -16,6 +16,10 @@ namespace GestionCommerciale.Api.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderLine> OrderLines { get; set; }
+        public DbSet<Taxe> Taxes { get; set; }
+
+        public DbSet<Remise> Remises { get; set; }
+        public DbSet<OrderRemise> OrderRemises { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -79,6 +83,34 @@ namespace GestionCommerciale.Api.Data
                 .WithMany()
                 .HasForeignKey(ol => ol.ProductId)
                 .OnDelete(DeleteBehavior.Restrict); // empêche de supprimer un produit déjà commandé
+
+                modelBuilder.Entity<Taxe>()
+                .Property(t => t.Valeur)
+                .HasPrecision(18, 2);
+
+                modelBuilder.Entity<Remise>()
+                .Property(r => r.Valeur)
+                .HasPrecision(18, 2);
+
+                modelBuilder.Entity<Order>()
+                .Property(o => o.MontantRemise)
+                .HasPrecision(18, 2);
+
+
+                modelBuilder.Entity<OrderRemise>()
+                .HasKey(or => new { or.OrderId, or.RemiseId });
+
+                modelBuilder.Entity<OrderRemise>()
+                .HasOne(or => or.Order)
+                .WithMany(o => o.OrderRemises)
+                .HasForeignKey(or => or.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                modelBuilder.Entity<OrderRemise>()
+                .HasOne(or => or.Remise)
+                .WithMany()
+                .HasForeignKey(or => or.RemiseId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
